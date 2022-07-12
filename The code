@@ -1,0 +1,46 @@
+import csv
+
+def main():
+    file1 =  open("dna.csv", "r")
+    csv_file = csv.DictReader(file1)
+
+    file2 = open("sequence.txt", "r")
+    dna1 = file2.readline()
+
+    file3 = open("sequence2.txt", "r")
+    dna2 = file3.readline()
+
+    print(f"{find_similar(dna2, csv_file)} who has the first dna\n{find_similar(dna1, csv_file)} has the second dna")
+
+    file1.close()
+    file2.close()
+    file3.close()
+
+def find_similar(dna: str, data: str) -> str:
+
+    AGATC = str(longest_repeat("AGATC", dna))
+    AATG = str(longest_repeat("AATG", dna))
+    TATC = str(longest_repeat("TATC", dna))
+     
+    for row in data:
+        if row["AGATC"] == AGATC and row["AATG"] == AATG and row["TATC"] == TATC:
+            return row["Name"]
+
+    return "No One"
+
+def longest_repeat(strs: str, dna: str) -> int:
+    length = len(strs)
+    counter = 0
+
+    for start in range(length):
+        tmp_counter = 0
+        for i in range(start, len(dna), length):
+            if strs == dna[i:i + length]:
+                tmp_counter += 1
+            else:
+                if counter < tmp_counter:
+                    counter = tmp_counter
+                    tmp_counter = 0
+    return counter
+
+main()
